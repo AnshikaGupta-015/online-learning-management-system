@@ -1,0 +1,173 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "Represents an authenticated user profile with role, gamification stats, and metadata.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Unique user ID matching auth UID." },
+        "email": { "type": "string", "format": "email", "description": "Primary verified user email." },
+        "name": { "type": "string", "maxLength": 100, "description": "Display name of user." },
+        "role": { "type": "string", "enum": ["student", "instructor", "admin"], "description": "User access role." },
+        "avatar": { "type": "string", "description": "URL to user profile picture." },
+        "headline": { "type": "string", "maxLength": 200, "description": "Professional tagline or title." },
+        "bio": { "type": "string", "maxLength": 1000, "description": "User biographical summary." },
+        "points": { "type": "number", "description": "Accumulated gamification reward points." },
+        "streakDays": { "type": "number", "description": "Consecutive days active learning streak." },
+        "createdAt": { "type": "string", "description": "Timestamp string of profile creation." },
+        "updatedAt": { "type": "string", "description": "Timestamp string of latest profile update." }
+      },
+      "required": ["id", "email", "name", "role"]
+    },
+    "Course": {
+      "title": "Course",
+      "description": "Educational course or specialization created and published on Learnova.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Unique course ID." },
+        "title": { "type": "string", "maxLength": 200, "description": "Course title." },
+        "slug": { "type": "string", "description": "URL-friendly course identifier." },
+        "subtitle": { "type": "string", "maxLength": 300, "description": "Subtitle or summary." },
+        "description": { "type": "string", "description": "Detailed curriculum narrative." },
+        "category": { "type": "string", "description": "Subject domain category." },
+        "level": { "type": "string", "enum": ["Beginner", "Intermediate", "Advanced", "All Levels"], "description": "Difficulty benchmark." },
+        "instructorId": { "type": "string", "description": "UID of instructor faculty." },
+        "instructorName": { "type": "string", "description": "Full name of the faculty member." },
+        "instructorRole": { "type": "string", "description": "Instructor professional designation." },
+        "instructorAvatar": { "type": "string", "description": "Instructor photo URL." },
+        "thumbnail": { "type": "string", "description": "Course hero banner image URL." },
+        "price": { "type": "number", "description": "Price in INR." },
+        "originalPrice": { "type": "number", "description": "Original retail price in INR." },
+        "rating": { "type": "number", "description": "Average learner review score." },
+        "reviewsCount": { "type": "number", "description": "Total reviews count." },
+        "enrolledCount": { "type": "number", "description": "Total enrolled learners." },
+        "durationHours": { "type": "number", "description": "Total content duration in hours." },
+        "lecturesCount": { "type": "number", "description": "Total count of video lectures." },
+        "status": { "type": "string", "enum": ["draft", "pending", "published"], "description": "Course moderation status." },
+        "createdAt": { "type": "string", "description": "Timestamp of course creation." }
+      },
+      "required": ["id", "title", "instructorId", "price", "status"]
+    },
+    "Enrollment": {
+      "title": "Enrollment",
+      "description": "Record of a student's enrollment and learning progress in a course.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Enrollment ID compound (e.g. userId_courseId)." },
+        "userId": { "type": "string", "description": "Enrolled student user ID." },
+        "userEmail": { "type": "string", "description": "Enrolled student email address." },
+        "courseId": { "type": "string", "description": "Enrolled course ID." },
+        "progressPercentage": { "type": "number", "description": "Progress percentage (0-100)." },
+        "completedLectureIds": { "type": "array", "description": "Array of completed lecture identifiers." },
+        "currentLectureId": { "type": "string", "description": "Last visited lecture ID." },
+        "enrolledAt": { "type": "string", "description": "Date enrolled." },
+        "lastAccessedAt": { "type": "string", "description": "Last accessed timestamp." }
+      },
+      "required": ["id", "userId", "courseId", "progressPercentage"]
+    },
+    "Certificate": {
+      "title": "Certificate",
+      "description": "Cryptographically verifiable credential issued to student on course completion.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Certificate document ID." },
+        "code": { "type": "string", "description": "Public certificate verification code." },
+        "userId": { "type": "string", "description": "Credential recipient user ID." },
+        "userName": { "type": "string", "description": "Full name of recipient." },
+        "courseId": { "type": "string", "description": "Course ID." },
+        "courseTitle": { "type": "string", "description": "Course program title." },
+        "instructorName": { "type": "string", "description": "Lead instructor faculty name." },
+        "issueDate": { "type": "string", "description": "Conferral date string." },
+        "gradePercentage": { "type": "number", "description": "Final score benchmark percentage." },
+        "credentialHash": { "type": "string", "description": "SHA-256 cryptographic proof string." }
+      },
+      "required": ["id", "code", "userId", "courseId", "credentialHash"]
+    },
+    "Note": {
+      "title": "Note",
+      "description": "Timestamped note captured by a student while watching a course lecture.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Unique note ID." },
+        "userId": { "type": "string", "description": "Author student ID." },
+        "courseId": { "type": "string", "description": "Course ID." },
+        "lectureId": { "type": "string", "description": "Lecture ID." },
+        "lectureTitle": { "type": "string", "description": "Lecture title." },
+        "timestampSeconds": { "type": "number", "description": "Scrubber second timestamp." },
+        "text": { "type": "string", "maxLength": 2000, "description": "Captured note content." },
+        "createdAt": { "type": "string", "description": "Timestamp created." }
+      },
+      "required": ["id", "userId", "courseId", "lectureId", "text"]
+    },
+    "Order": {
+      "title": "Order",
+      "description": "Financial transaction record for course enrollments and checkout.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Unique order ID." },
+        "userId": { "type": "string", "description": "Purchaser student ID." },
+        "orderNumber": { "type": "string", "description": "Tax invoice number." },
+        "subtotal": { "type": "number", "description": "Pre-discount subtotal." },
+        "discount": { "type": "number", "description": "Promotional discount applied." },
+        "total": { "type": "number", "description": "Total INR charged." },
+        "paymentMethod": { "type": "string", "description": "Gateway type (razorpay, upi, card)." },
+        "couponApplied": { "type": "string", "description": "Applied promo code." },
+        "status": { "type": "string", "description": "Payment authorization state." },
+        "createdAt": { "type": "string", "description": "Transaction date." }
+      },
+      "required": ["id", "userId", "orderNumber", "total", "status"]
+    },
+    "Discussion": {
+      "title": "Discussion",
+      "description": "Q&A inquiry or discussion thread attached to a course lecture.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Unique discussion question ID." },
+        "courseId": { "type": "string", "description": "Course ID." },
+        "lectureId": { "type": "string", "description": "Lecture ID." },
+        "authorId": { "type": "string", "description": "Author student UID." },
+        "authorName": { "type": "string", "description": "Author display name." },
+        "authorAvatar": { "type": "string", "description": "Author avatar photo." },
+        "content": { "type": "string", "maxLength": 1500, "description": "Question or architectural inquiry." },
+        "reply": { "type": "string", "maxLength": 2000, "description": "Instructor or TA response." },
+        "instructorName": { "type": "string", "description": "Name of responding faculty." },
+        "createdAt": { "type": "string", "description": "Posted timestamp." }
+      },
+      "required": ["id", "courseId", "authorId", "content"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "UserProfile",
+      "description": "User profile documents keyed by auth UID."
+    },
+    "/admins/{userId}": {
+      "schema": "UserProfile",
+      "description": "Designated administrative users with supervisory permissions."
+    },
+    "/courses/{courseId}": {
+      "schema": "Course",
+      "description": "Course offerings and curricula created by faculty."
+    },
+    "/enrollments/{enrollmentId}": {
+      "schema": "Enrollment",
+      "description": "Student course enrollment and lecture progress records."
+    },
+    "/certificates/{certificateId}": {
+      "schema": "Certificate",
+      "description": "Cryptographically verifiable certificates of completion."
+    },
+    "/notes/{noteId}": {
+      "schema": "Note",
+      "description": "Timestamped lecture takeaways created by students."
+    },
+    "/orders/{orderId}": {
+      "schema": "Order",
+      "description": "Receipts and billing invoices for course purchases."
+    },
+    "/discussions/{discussionId}": {
+      "schema": "Discussion",
+      "description": "Lecture discussion threads, student questions, and instructor replies."
+    }
+  }
+}
